@@ -27,7 +27,14 @@ const HomePage = () => {
           </div>
         </div>
       </header>
-      <div className="grid grid-cols-12"></div>
+      <section className="grid h-full w-full grid-cols-12 place-items-center">
+        <main className="col-span-8 h-full w-full border-r border-gray-300">
+          This is the main section
+        </main>
+        <aside className="col-span-4 h-full w-full">
+          This is used for side bar
+        </aside>
+      </section>
     </div>
   );
 };
