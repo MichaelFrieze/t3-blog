@@ -1,6 +1,7 @@
 import { IoReorderThreeOutline } from "react-icons/io5";
 import { BsBell } from "react-icons/bs";
 import { FiEdit } from "react-icons/fi";
+import { CiSearch } from "react-icons/ci";
 
 const HomePage = () => {
   return (
@@ -29,7 +30,20 @@ const HomePage = () => {
       </header>
       <section className="grid h-full w-full grid-cols-12 place-items-center">
         <main className="col-span-8 h-full w-full border-r border-gray-300">
-          This is the main section
+          <div className="flex w-full flex-col space-y-4">
+            <div className="flex w-full items-center space-x-4 bg-red-400">
+              <label htmlFor="search" className="relative">
+                <CiSearch className="absolute" />
+                <input type="text" name="search" id="search" />
+              </label>
+              <div className="flex items-center">
+                <div>My topics:</div>
+                <div>all tags are here</div>
+              </div>
+            </div>
+            <div></div>
+          </div>
+          <div></div>
         </main>
         <aside className="col-span-4 h-full w-full">
           This is used for side bar
