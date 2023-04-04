@@ -30,8 +30,8 @@ const HomePage = () => {
           </div>
         </div>
       </header>
-      <section className="grid h-full w-full grid-cols-12 place-items-center">
-        <main className="col-span-8 h-full w-full border-r border-gray-300 px-24">
+      <section className="grid grid-cols-12">
+        <main className="col-span-8 border-r border-gray-300 px-24">
           <div className="flex w-full flex-col space-y-4 py-10">
             <div className="flex w-full items-center space-x-4">
               <label
@@ -130,7 +130,7 @@ const HomePage = () => {
             ))}
           </div>
         </main>
-        <aside className="sticky top-20 col-span-4 flex h-full w-full flex-col space-y-4 p-6">
+        <aside className="sticky top-20 col-span-4 flex h-[90vh] flex-col space-y-4 p-6">
           <div>
             <h3 className="my-6 text-lg font-semibold">
               People you might be interested
