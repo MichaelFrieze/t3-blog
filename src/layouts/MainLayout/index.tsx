@@ -1,12 +1,12 @@
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import { IoReorderThreeOutline } from "react-icons/io5";
 import { BsBell } from "react-icons/bs";
 import { FiEdit } from "react-icons/fi";
-import { signIn, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { HiLogout } from "react-icons/hi";
 
 const MainLayout = ({ children }: React.PropsWithChildren) => {
   const { data: sessionData, status } = useSession();
-  console.log(sessionData);
 
   return (
     <div className="flex h-full w-full flex-col">
@@ -28,6 +28,17 @@ const MainLayout = ({ children }: React.PropsWithChildren) => {
                 <div>Write</div>
                 <div>
                   <FiEdit />
+                </div>
+              </button>
+            </div>
+            <div>
+              <button
+                onClick={() => signOut()}
+                className="flex items-center space-x-3 rounded border border-gray-200 px-4 py-2 transition hover:border-gray-900 hover:text-gray-900"
+              >
+                <div>Logout</div>
+                <div>
+                  <HiLogout />
                 </div>
               </button>
             </div>
