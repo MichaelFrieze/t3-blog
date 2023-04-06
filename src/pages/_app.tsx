@@ -1,6 +1,7 @@
 import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
+import GlobalContextProvider from "../contexts/GlobalContextProvider";
 
 import { trpc } from "../utils/trpc";
 
@@ -12,7 +13,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <Component {...pageProps} />
+      <GlobalContextProvider>
+        <Component {...pageProps} />
+      </GlobalContextProvider>
     </SessionProvider>
   );
 };
