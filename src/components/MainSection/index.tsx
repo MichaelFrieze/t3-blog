@@ -4,6 +4,7 @@ import { trpc } from "../../utils/trpc";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import dayjs from "dayjs";
 import Image from "next/image";
+import Link from "next/link";
 
 const MainSection = () => {
   const getPosts = trpc.post.getPosts.useQuery();
@@ -62,7 +63,8 @@ const MainSection = () => {
 
         {getPosts.isSuccess &&
           getPosts.data.map((post) => (
-            <div
+            <Link
+              href={`/${post.slug}`}
               key={post.id}
               className="group flex flex-col space-y-4 border-b border-gray-300 pb-8 last:border-none"
             >
@@ -114,7 +116,7 @@ const MainSection = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
       </div>
     </main>
