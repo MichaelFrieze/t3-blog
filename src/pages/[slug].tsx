@@ -1,8 +1,20 @@
 import { useRouter } from "next/router";
 import MainLayout from "../layouts/MainLayout";
+import { trpc } from "../utils/trpc";
 
 const PostPage = () => {
   const router = useRouter();
+
+  const getPost = trpc.post.getPost.useQuery(
+    {
+      slug: router.query.slug as string,
+    },
+    {
+      enabled: Boolean(router.query.slug),
+    }
+  );
+
+  console.log(getPost);
 
   return (
     <MainLayout>
