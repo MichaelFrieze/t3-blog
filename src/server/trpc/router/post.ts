@@ -27,6 +27,14 @@ export const postRouter = router({
       orderBy: {
         createdAt: "desc",
       },
+      include: {
+        author: {
+          select: {
+            name: true,
+            image: true,
+          },
+        },
+      },
     });
 
     return posts;

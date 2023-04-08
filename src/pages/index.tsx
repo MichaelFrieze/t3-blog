@@ -6,6 +6,8 @@ import MainLayout from "../layouts/MainLayout";
 import WriteFormModal from "../components/WriteFormModal";
 import { trpc } from "../utils/trpc";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import dayjs from "dayjs";
+import Image from "next/image";
 
 const HomePage = () => {
   const getPosts = trpc.post.getPosts.useQuery();
@@ -60,11 +62,11 @@ const HomePage = () => {
           </div>
           <div className="flex w-full flex-col justify-center space-y-8">
             {getPosts.isLoading && (
-              <div className="flex h-full w-full items-center justify-center">
-                <div>Loading...</div>
+              <div className="flex h-full w-full items-center justify-center space-x-4">
                 <div>
                   <AiOutlineLoading3Quarters className="animate-spin" />
                 </div>
+                <div>Loading...</div>
               </div>
             )}
 
@@ -75,10 +77,22 @@ const HomePage = () => {
                   className="group flex flex-col space-y-4 border-b border-gray-300 pb-8 last:border-none"
                 >
                   <div className="flex w-full items-center space-x-2">
-                    <div className="h-10 w-10 rounded-full bg-gray-400"></div>
+                    <div className="relative h-10 w-10 rounded-full bg-gray-400">
+                      {post.author.image && (
+                        <Image
+                          src={post.author.image}
+                          fill
+                          alt={post.author.name ?? ""}
+                          className="rounded-full"
+                        />
+                      )}
+                    </div>
                     <div>
                       <p className="font-semibold">
-                        Michael Frieze &#x2022; Mar 24, 2023
+                        {post.author.name} &#x2022;
+                        <span className="mx-1">
+                          {dayjs(post.createdAt).format("MM/DD/YY")}
+                        </span>
                       </p>
                       <p className="text-sm">Developer and Musician</p>
                     </div>
