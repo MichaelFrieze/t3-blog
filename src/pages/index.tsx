@@ -93,7 +93,7 @@ const HomePage = () => {
                       </p>
                     </div>
                     <div className="col-span-4">
-                      <div className="h-full w-full transform rounded-xl bg-gray-300 transition duration-300 hover:scale-105 hover:shadow-xl"></div>
+                      <div className="h-[170px] w-full transform rounded-xl bg-gray-300 transition duration-300 hover:scale-105 hover:shadow-xl"></div>
                     </div>
                   </div>
                   <div>
