@@ -15,8 +15,6 @@ const PostPage = () => {
     }
   );
 
-  console.log(getPost);
-
   return (
     <MainLayout>
       {getPost.isLoading && (
