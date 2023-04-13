@@ -2,8 +2,9 @@ import { useRouter } from "next/router";
 import MainLayout from "../layouts/MainLayout";
 import { trpc } from "../utils/trpc";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import { FcLike } from "react-icons/fc";
+import { FcLike, FcLikePlaceholder } from "react-icons/fc";
 import { BsChat } from "react-icons/bs";
+import { useState } from "react";
 
 const PostPage = () => {
   const router = useRouter();
@@ -16,6 +17,12 @@ const PostPage = () => {
       enabled: Boolean(router.query.slug),
     }
   );
+
+  const likePost = trpc.post.likePost.useMutation({
+    onSuccess: () => {
+      console.log("the post was liked!");
+    },
+  });
 
   return (
     <MainLayout>
@@ -31,7 +38,27 @@ const PostPage = () => {
         <div className="fixed bottom-10 flex w-full items-center justify-center">
           <div className="group flex items-center justify-center space-x-4 rounded-full border border-gray-400 bg-white px-6 py-3 transition duration-300 hover:border-gray-900">
             <div className="border-r pr-4 transition duration-300 group-hover:border-gray-900">
-              <FcLike className="text-xl" />
+              {getPost.data?.likes && getPost.data?.likes.length > 0 ? (
+                <FcLike
+                  // onClick={() =>
+                  //   getPost.data?.id &&
+                  //   likePost.mutate({
+                  //     postId: getPost.data?.id,
+                  //   })
+                  // }
+                  className="cursor-pointer text-xl"
+                />
+              ) : (
+                <FcLikePlaceholder
+                  onClick={() =>
+                    getPost.data?.id &&
+                    likePost.mutate({
+                      postId: getPost.data?.id,
+                    })
+                  }
+                  className="cursor-pointer text-xl"
+                />
+              )}
             </div>
             <div>
               <BsChat className="text-base" />
