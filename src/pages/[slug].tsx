@@ -4,10 +4,12 @@ import { trpc } from "../utils/trpc";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { FcLike, FcLikePlaceholder } from "react-icons/fc";
 import { BsChat } from "react-icons/bs";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 const PostPage = () => {
   const router = useRouter();
+
+  const postRoute = trpc.useContext().post;
 
   const getPost = trpc.post.getPost.useQuery(
     {
@@ -18,9 +20,19 @@ const PostPage = () => {
     }
   );
 
+  const invalidateCurrentPostPage = useCallback(() => {
+    postRoute.getPost.invalidate({ slug: router.query.slug as string });
+  }, [postRoute.getPost, router.query.slug]);
+
   const likePost = trpc.post.likePost.useMutation({
     onSuccess: () => {
-      console.log("the post was liked!");
+      invalidateCurrentPostPage();
+    },
+  });
+
+  const dislikePost = trpc.post.disLikePost.useMutation({
+    onSuccess: () => {
+      invalidateCurrentPostPage();
     },
   });
 
@@ -40,12 +52,12 @@ const PostPage = () => {
             <div className="border-r pr-4 transition duration-300 group-hover:border-gray-900">
               {getPost.data?.likes && getPost.data?.likes.length > 0 ? (
                 <FcLike
-                  // onClick={() =>
-                  //   getPost.data?.id &&
-                  //   likePost.mutate({
-                  //     postId: getPost.data?.id,
-                  //   })
-                  // }
+                  onClick={() =>
+                    getPost.data?.id &&
+                    dislikePost.mutate({
+                      postId: getPost.data?.id,
+                    })
+                  }
                   className="cursor-pointer text-xl"
                 />
               ) : (
