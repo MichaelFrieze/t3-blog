@@ -2,7 +2,6 @@ import slugify from "slugify";
 import { writeFormSchema } from "../../../components/WriteFormModal";
 import { router, protectedProcedure, publicProcedure } from "../trpc";
 import { z } from "zod";
-import { commentFormSchema } from "../../../components/CommentSidebar";
 
 export const postRouter = router({
   createPost: protectedProcedure
@@ -170,5 +169,35 @@ export const postRouter = router({
           },
         },
       });
+    }),
+
+  getComments: publicProcedure
+    .input(
+      z.object({
+        postId: z.string(),
+      })
+    )
+    .query(async ({ ctx: { prisma }, input: { postId } }) => {
+      const comments = await prisma.comment.findMany({
+        where: {
+          postId,
+        },
+        select: {
+          id: true,
+          text: true,
+          user: {
+            select: {
+              name: true,
+              image: true,
+            },
+          },
+          createdAt: true,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      return comments;
     }),
 });

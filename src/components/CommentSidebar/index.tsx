@@ -6,6 +6,10 @@ import { HiXMark } from "react-icons/hi2";
 import { z } from "zod";
 import { trpc } from "../../utils/trpc";
 import { toast } from "react-hot-toast";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime);
 
 type CommentSidebarProps = {
   showCommentSidebar: boolean;
@@ -28,17 +32,28 @@ const CommentSidebar = ({
     register,
     handleSubmit,
     formState: { isValid },
+    reset,
   } = useForm<CommentFormType>({
     resolver: zodResolver(commentFormSchema),
   });
 
+  const postRoute = trpc.useContext().post;
+
   const submitComment = trpc.post.submitComment.useMutation({
     onSuccess: () => {
       toast.success("🥳");
+      postRoute.getComments.invalidate({
+        postId,
+      });
+      reset();
     },
     onError: (error) => {
       toast.error(error.message);
     },
+  });
+
+  const getComments = trpc.post.getComments.useQuery({
+    postId,
   });
 
   return (
@@ -90,25 +105,24 @@ const CommentSidebar = ({
                   )}
                 </form>
                 <div className="flex flex-col items-center justify-center space-y-6">
-                  {Array.from({ length: 7 }).map((_, i) => (
-                    <div
-                      className="flex w-full flex-col space-y-2 border-b border-b-gray-300 pb-4 last:border-none"
-                      key={i}
-                    >
-                      <div className="flex w-full items-center space-x-2 text-xs">
-                        <div className="relative h-8 w-8 rounded-full bg-gray-400"></div>
-                        <div>
-                          <p className="font-semibold">Michael Frieze</p>
-                          <p className="">2 hours ago</p>
+                  {getComments.isSuccess &&
+                    getComments.data.map((comment) => (
+                      <div
+                        className="flex w-full flex-col space-y-2 border-b border-b-gray-300 pb-4 last:border-none"
+                        key={comment.id}
+                      >
+                        <div className="flex w-full items-center space-x-2 text-xs">
+                          <div className="relative h-8 w-8 rounded-full bg-gray-400"></div>
+                          <div>
+                            <p className="font-semibold">{comment.user.name}</p>
+                            <p>{dayjs(comment.createdAt).fromNow()}</p>
+                          </div>
+                        </div>
+                        <div className="text-sm text-gray-600">
+                          {comment.text}
                         </div>
                       </div>
-                      <div className="text-sm text-gray-600">
-                        Lorem ipsum, dolor sit amet consectetur adipisicing
-                        elit. Ad alias, temporibus provident totam libero id
-                        ipsum autem dolore natus ex.
-                      </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
               </div>
             </Dialog.Panel>
