@@ -1,16 +1,46 @@
 import { Dialog, Transition } from "@headlessui/react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import React, { Fragment } from "react";
+import { useForm } from "react-hook-form";
 import { HiXMark } from "react-icons/hi2";
+import { z } from "zod";
+import { trpc } from "../../utils/trpc";
+import { toast } from "react-hot-toast";
 
 type CommentSidebarProps = {
   showCommentSidebar: boolean;
   setShowCommentSidebar: React.Dispatch<React.SetStateAction<boolean>>;
+  postId: string;
 };
+
+type CommentFormType = { text: string };
+
+export const commentFormSchema = z.object({
+  text: z.string().min(3),
+});
 
 const CommentSidebar = ({
   showCommentSidebar,
   setShowCommentSidebar,
+  postId,
 }: CommentSidebarProps) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { isValid },
+  } = useForm<CommentFormType>({
+    resolver: zodResolver(commentFormSchema),
+  });
+
+  const submitComment = trpc.post.submitComment.useMutation({
+    onSuccess: () => {
+      toast.success("🥳");
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
   return (
     <Transition.Root show={showCommentSidebar} as={Fragment}>
       <Dialog as="div" onClose={() => setShowCommentSidebar(false)}>
@@ -34,19 +64,30 @@ const CommentSidebar = ({
                     />
                   </div>
                 </div>
-                <form className="flex flex-col items-end space-y-5">
+                <form
+                  onSubmit={handleSubmit((data) => {
+                    submitComment.mutate({
+                      ...data,
+                      postId,
+                    });
+                  })}
+                  className="my-6 flex flex-col items-end space-y-5"
+                >
                   <textarea
                     id="comment"
                     rows={3}
                     className="w-full rounded-xl border border-gray-300 p-4 shadow-lg outline-none focus:border-gray-600"
                     placeholder="What are your thoughts?"
+                    {...register("text")}
                   />
-                  <button
-                    type="submit"
-                    className="flex items-center space-x-3 rounded border border-gray-300 px-4 py-2 transition hover:border-gray-900 hover:text-gray-900"
-                  >
-                    Comment
-                  </button>
+                  {isValid && (
+                    <button
+                      type="submit"
+                      className="flex items-center space-x-3 rounded border border-gray-300 px-4 py-2 transition hover:border-gray-900 hover:text-gray-900"
+                    >
+                      Comment
+                    </button>
+                  )}
                 </form>
                 <div className="flex flex-col items-center justify-center space-y-6">
                   {Array.from({ length: 7 }).map((_, i) => (

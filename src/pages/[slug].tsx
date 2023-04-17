@@ -41,10 +41,13 @@ const PostPage = () => {
 
   return (
     <MainLayout>
-      <CommentSidebar
-        showCommentSidebar={showCommentSidebar}
-        setShowCommentSidebar={setShowCommentSidebar}
-      />
+      {getPost.data?.id && (
+        <CommentSidebar
+          showCommentSidebar={showCommentSidebar}
+          setShowCommentSidebar={setShowCommentSidebar}
+          postId={getPost.data?.id}
+        />
+      )}
 
       {getPost.isLoading && (
         <div className="flex h-full w-full items-center justify-center space-x-4">

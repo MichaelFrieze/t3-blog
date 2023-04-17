@@ -2,6 +2,7 @@ import slugify from "slugify";
 import { writeFormSchema } from "../../../components/WriteFormModal";
 import { router, protectedProcedure, publicProcedure } from "../trpc";
 import { z } from "zod";
+import { commentFormSchema } from "../../../components/CommentSidebar";
 
 export const postRouter = router({
   createPost: protectedProcedure
@@ -141,6 +142,31 @@ export const postRouter = router({
           userId_postId: {
             postId: postId,
             userId: session.user.id,
+          },
+        },
+      });
+    }),
+
+  submitComment: protectedProcedure
+    .input(
+      z.object({
+        text: z.string().min(3),
+        postId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx: { prisma, session }, input: { text, postId } }) => {
+      await prisma.comment.create({
+        data: {
+          text,
+          user: {
+            connect: {
+              id: session.user.id,
+            },
+          },
+          post: {
+            connect: {
+              id: postId,
+            },
           },
         },
       });
