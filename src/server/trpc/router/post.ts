@@ -200,4 +200,37 @@ export const postRouter = router({
 
       return comments;
     }),
+
+  getReadingList: protectedProcedure.query(
+    async ({ ctx: { prisma, session } }) => {
+      const allBookmarks = await prisma.bookmark.findMany({
+        where: {
+          userId: session.user.id,
+        },
+        take: 4,
+        orderBy: {
+          createdAt: "desc",
+        },
+        select: {
+          id: true,
+          post: {
+            select: {
+              title: true,
+              description: true,
+              author: {
+                select: {
+                  name: true,
+                  image: true,
+                },
+              },
+              createdAt: true,
+              slug: true,
+            },
+          },
+        },
+      });
+
+      return allBookmarks;
+    }
+  ),
 });
